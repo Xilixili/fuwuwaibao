@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<!-- 引入 echarts.js -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.0.4/echarts-en.common.js"></script>
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+</head>
+<body>
+	<div id="main" style="width: 600px; height: 400px;"></div>
+
+	<script type="text/javascript">
+		var myChart = echarts.init(document.getElementById('main'));
+		// 显示标题，图例和空的坐标轴
+		myChart.setOption({
+			title : {
+				text : '数据加载示例'
+			},
+			tooltip : {},
+			legend : {
+				data : [ '销量' ]
+			},
+			xAxis : {
+				data : {}
+			},
+			yAxis : {},
+			series : [ {
+				name : '销量',
+				type : 'bar',
+				data : []
+			} ]
+		});
+
+		$.ajax({
+			type : "post",
+
+			url : "DaoEChartsServlet01",
+
+			dataType : "json", //返回数据形式为json
+
+			success : function(result) {
+				alert("连接servlet成功");
+				myChart.setOption({
+					xAxis : {
+						data : [ result[0].job.job_name,
+								result[1].job.job_name, result[2].job.job_name,
+								result[3].job.job_name ]
+					},
+
+					series : [ {
+						name : '销量',
+						data : [ result[0].job.id, result[1].job.id,
+								result[2].job.id, result[3].job.id ]
+					} ]
+				});
+			},
+
+			error : function(errorMsg) {
+				alert("不好意思,图表请求数据失败啦!");
+				myChart.hideLoading();
+			}
+		})
+	</script>
+</body>
+</html>
